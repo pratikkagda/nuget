@@ -116,6 +116,7 @@
     <Compile Include="NETPortable\NetPortableProfileTableSerializer.cs" />
     <Compile Include="OperationResolution\ActionExecutor.cs" />
     <Compile Include="OperationResolution\ActionResolver.cs" />
+    <Compile Include="OperationResolution\InstallPackageUtility.cs" />
     <Compile Include="OperationResolution\IPackageOperationEventListener.cs" />
     <Compile Include="OperationResolution\NullProjectManager.cs" />
     <Compile Include="OperationResolution\PackageAction.cs" />
