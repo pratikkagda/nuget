@@ -33,6 +33,9 @@ namespace NuGet.Commands
         [Option(typeof(NuGetCommand), "UpdateCommandSafeDescription")]
         public bool Safe { get; set; }
 
+        [Option(typeof(NuGetCommand), "UpdateCommandVersionDescription")]
+        public SemanticVersion Version { get; set; }
+
         [Option(typeof(NuGetCommand), "UpdateCommandSelfDescription")]
         public bool Self { get; set; }
 
@@ -50,8 +53,8 @@ namespace NuGet.Commands
             // update with self as parameter
             if (Self)
             {
-                var selfUpdater = new SelfUpdater(RepositoryFactory) 
-                { 
+                var selfUpdater = new SelfUpdater(RepositoryFactory)
+                {
                     Console = Console,
                     IncludePrerelease = Prerelease
                 };
@@ -85,12 +88,12 @@ namespace NuGet.Commands
                 UpdatePackages(new MSBuildProjectSystem(inputFile));
                 return;
             }
-                
+
             if (!FileSystem.FileExists(inputFile))
             {
                 throw new CommandLineException(NuGetResources.UnableToFindSolution, inputFile);
             }
-            
+
             // update with solution as parameter
             string solutionDir = Path.GetDirectoryName(inputFile);
             UpdateAllPackages(solutionDir);
@@ -164,7 +167,7 @@ namespace NuGet.Commands
 
             }
 
-            return  null;
+            return null;
         }
 
         private string GetInputFile()
@@ -178,12 +181,12 @@ namespace NuGet.Commands
                 {
                     return GetPackagesConfigPath(path);
                 }
-                
+
                 if (extension.Equals(".sln", StringComparison.OrdinalIgnoreCase))
                 {
                     return Path.GetFullPath(path);
                 }
-                
+
                 if (ProjectHelper.SupportedProjectExtensions.Contains(extension))
                 {
                     return Path.GetFullPath(path);
@@ -205,7 +208,7 @@ namespace NuGet.Commands
 
         private void UpdatePackages(string packagesConfigPath)
         {
-            var project =  GetMSBuildProject(packagesConfigPath);
+            var project = GetMSBuildProject(packagesConfigPath);
             UpdatePackages(project);
         }
 
@@ -285,7 +288,7 @@ namespace NuGet.Commands
             // Try to locate the project file associated with this packages.config file
             var directory = Path.GetDirectoryName(packageReferenceFilePath);
             var projectFiles = ProjectHelper.GetProjectFiles(directory).Take(2).ToArray();
-         
+
             if (projectFiles.Length == 0)
             {
                 throw new CommandLineException(LocalizedResourceManager.GetString("UnableToLocateProjectFile"), packageReferenceFilePath);
@@ -310,9 +313,9 @@ namespace NuGet.Commands
             var packageManager = new PackageManager(sourceRepository, pathResolver, sharedRepositoryFileSystem, sharedPackageRepository);
 
             var projectManager = new ProjectManager(packageManager, pathResolver, project, localRepository)
-                                 {
-                                     ConstraintProvider = constraintProvider
-                                 };
+            {
+                ConstraintProvider = constraintProvider
+            };
 
             // Fix for work item 2411: When updating packages, we did not add packages to the shared package repository. 
             // Consequently, when querying the package reference repository, we would have package references with no backing package files in
@@ -345,7 +348,7 @@ namespace NuGet.Commands
                                 Safe = Safe
                             };
 
-                            var operations = updateUtility.ResolveActionsForUpdate(package.Id, null, new[] { projectManager }, false);
+                            var operations = updateUtility.ResolveActionsForUpdate(package.Id, Version, new[] { projectManager }, false);
                             var userOperationExecutor = new ActionExecutor();
                             userOperationExecutor.Execute(operations);
                         }

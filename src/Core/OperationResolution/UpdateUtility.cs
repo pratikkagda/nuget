@@ -141,6 +141,10 @@ namespace NuGet
 
                 Resolver.AddOperation(PackageAction.Install, package, projectManager);
             }
+            else
+            {
+                throw new Exception(String.Format(NuGetResources.InvalidVersionString, version.ToString()));
+            }
 
             // Display message that no updates are available.
             IVersionSpec constraint = projectManager.ConstraintProvider.GetConstraint(package.Id);
